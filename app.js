@@ -95,5 +95,10 @@ app.post('/api/movies', function (req, res) {
 
 });
 
+// Wrong route - 404 page not found
+app.use((req, res) => {
+    res.status(404).send("Oops! Page Not Found!");
+});
+
 app.listen(port);
 console.log("App listening on port : " + port);
