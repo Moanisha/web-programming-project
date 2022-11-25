@@ -30,14 +30,32 @@ mongoose.connect(database.url).
 //get all movies data from db
 app.get('/api/movies', function (req, res) {
     // use mongoose to get all movies in the database
-    Movie.find(function (err, movies) {
-        // if there is an error retrieving, send the error otherwise send data
+    let perPage = 2;
+    let page = 1;
+    Movie.find()
+        .limit(perPage)
+        .skip(perPage * page)
+        .sort({
+            _id: 'asc'
+        }).exec(function (err, movies) {
+            // if there is an error retrieving, send the error otherwise send data
+            if (err)
+                res.send(err)
+            console.log(movies)
+            res.send(movies); // return all movies in JSON format
+        });
+});
+
+// get a movie with ID
+app.get('/api/movies/:movie_id', function (req, res) {
+    let id = req.params.movie_id;
+    Movie.findById(id, function (err, movie) {
         if (err)
             res.send(err)
-        console.log(movies)
-        res.send(movies); // return all movies in JSON format
+        res.json(movie);
     });
 });
+
 
 app.post('/api/movies', function (req, res) {
 
