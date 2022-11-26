@@ -26,23 +26,69 @@ app.set('view engine', '.hbs');
 mongoose.connect(database.url).
     catch(error => handleError(error));
 
+app.get('/api/getForm', (req, res) => {
+    res.render('insertForm');
+});
 
+app.post('/api/movies/getResult', function (req, res) {
+    // use mongoose to get all movies based on page, perpage limit and title
+    let perPage = 2;
+    let page = 1;
+    let title = {}
+    if (req.body.perpage) {
+        perPage = parseInt(req.body.perpage);
+    }
+    if (req.body.page) {
+        page = parseInt(req.body.page);
+    }
+    if(req.body.title){
+        title = { title: req.body.title }
+    }
+
+    Movie
+        .find(title)
+        .sort({
+            _id: 'asc'
+        })
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .exec(function (err, movies) {
+            //if there is an error retrieving, send the error otherwise send data
+            if (err)
+                res.send(err)
+            console.log(movies)
+            res.render('data',{movies:movies}); // return result of movies
+        });
+});
 //get all movies data from db
 app.get('/api/movies', function (req, res) {
     // use mongoose to get all movies in the database
     let perPage = 2;
     let page = 1;
-    Movie.find()
-        .limit(perPage)
-        .skip(perPage * page)
+    let title = {}
+    if (req.query.perPage) {
+        perPage = parseInt(req.query.perPage);
+    }
+    if (req.query.page) {
+        page = parseInt(req.query.page);
+    }
+    if(req.query.title){
+        title = { title: req.query.title }
+    }
+
+    Movie
+        .find(title)
         .sort({
             _id: 'asc'
-        }).exec(function (err, movies) {
-            // if there is an error retrieving, send the error otherwise send data
+        })
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .exec(function (err, movies) {
+            //if there is an error retrieving, send the error otherwise send data
             if (err)
                 res.send(err)
             console.log(movies)
-            res.send(movies); // return all movies in JSON format
+            res.json(movies); // return all movies in JSON format
         });
 });
 
@@ -97,38 +143,38 @@ app.post('/api/movies', function (req, res) {
 
 
 //PUT 
-app.put('/api/movies/:movie_id', function(req, res) {
-	// create mongose method to update an existing record into collection
+app.put('/api/movies/:movie_id', function (req, res) {
+    // create mongose method to update an existing record into collection
     console.log(req.body);
 
-	let id = req.params.movie_id;
-	var data = {
+    let id = req.params.movie_id;
+    var data = {
         plot: req.body.plot,
-		rated: req.body.rated
-	}
+        rated: req.body.rated
+    }
 
-	// save the movie
-	Movie.findByIdAndUpdate(id, data, function(err, movies) {
-	if (err) throw err;
+    // save the movie
+    Movie.findByIdAndUpdate(id, data, function (err, movies) {
+        if (err) throw err;
 
-	res.send('Successfully! Movie Plot and Ratings are updated!!- '+movies.title);
-	});
+        res.send('Successfully! Movie Plot and Ratings are updated!!- ' + movies.title);
+    });
 });
 
 
 
 //DELETE
-app.delete('/api/movies/:delmovie_id', function(req, res) {
-	console.log(req.params.delmovie_id);
-	let id = req.params.delmovie_id;
-	Movie.remove({
-		_id : id
-	}, function(err) {
-		if (err)
-			res.send(err);
-		else
-			res.send('Movie data has been sucessfully deleted!');	
-	});
+app.delete('/api/movies/:delmovie_id', function (req, res) {
+    console.log(req.params.delmovie_id);
+    let id = req.params.delmovie_id;
+    Movie.remove({
+        _id: id
+    }, function (err) {
+        if (err)
+            res.send(err);
+        else
+            res.send('Movie data has been sucessfully deleted!');
+    });
 });
 
 

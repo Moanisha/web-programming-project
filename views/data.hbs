@@ -1,0 +1,14 @@
+<table border="1">
+    <thead>
+        <th>ID</th>
+        <th>Title</th>
+    </thead>
+    <tbody>
+        {{#each movies}}
+        <tr>
+            <td>{{this._id}}</td>
+            <td>{{this.title}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
