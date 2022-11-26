@@ -1,4 +1,4 @@
 module.exports = {
-    url : "mongodb+srv://Moanisha:12csr105@cluster0.1k6zj8c.mongodb.net/sample_mflix"
+    url : "mongodb+srv://admin:sakshi@cluster0.qujcsi7.mongodb.net/sample_mflix"
 };
 

@@ -95,6 +95,43 @@ app.post('/api/movies', function (req, res) {
 
 });
 
+
+//PUT 
+app.put('/api/movies/:movie_id', function(req, res) {
+	// create mongose method to update an existing record into collection
+    console.log(req.body);
+
+	let id = req.params.movie_id;
+	var data = {
+        plot: req.body.plot,
+		rated: req.body.rated
+	}
+
+	// save the movie
+	Movie.findByIdAndUpdate(id, data, function(err, movies) {
+	if (err) throw err;
+
+	res.send('Successfully! Movie Plot and Ratings are updated!!- '+movies.title);
+	});
+});
+
+
+
+//DELETE
+app.delete('/api/movies/:delmovie_id', function(req, res) {
+	console.log(req.params.delmovie_id);
+	let id = req.params.delmovie_id;
+	Movie.remove({
+		_id : id
+	}, function(err) {
+		if (err)
+			res.send(err);
+		else
+			res.send('Movie data has been sucessfully deleted!');	
+	});
+});
+
+
 // Wrong route - 404 page not found
 app.use((req, res) => {
     res.status(404).send("Oops! Page Not Found!");
