@@ -21,6 +21,7 @@ const MovieSchema = new Schema({
     title:{
         type: String
     },
+    fullplot:{type:String},
     countries:[{
         type: String
     }],
@@ -31,6 +32,9 @@ const MovieSchema = new Schema({
         type: Date
     },
     directors:[{
+        type: String
+    }],
+    writers:[{
         type: String
     }],
     rated:{

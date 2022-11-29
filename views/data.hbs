@@ -2,12 +2,82 @@
     <thead>
         <th>ID</th>
         <th>Title</th>
+        <th>Plot</th>
+        <th>Genres</th>
+        <th>Runtime</th>
+        <th>Rated</th>
+        <th>Cast</th>
+        <th>Comments</th>
+        <th>Poster</th>
+        <th>Title</th>
+        <th>Fullplot</th>
+        <th>Languages</th>
+        <th>Released</th>
+        <th>Directors</th>
+        <th>Writers</th>
+        <th>Awards</th>
+        <th>Last Update</th>
+        <th>Year</th>
+        <th>IMDB</th>
+        <th>Countries</th>
+        <th>Type</th>
+        <th>Tomatoes</th>
     </thead>
     <tbody>
         {{#each movies}}
         <tr>
             <td>{{this._id}}</td>
             <td>{{this.title}}</td>
+            <td>{{this.plot}}</td>
+            <td>
+                 <ul class="genres_list">
+                 {{#each genres}}
+                 <li>{{this}}</li>
+                 {{/each}}
+                 </ul>
+            </td>
+            <td>{{this.runtime}}</td>
+            <td>{{this.rated}}</td>
+            <td>
+                <ul class="cast_list">
+                 {{#each cast}}
+                 <li>{{this}}</li>
+                 {{/each}}
+                 </ul>
+            </td>
+            <td>{{this.num_mflix_comments}}</td>
+            <td><img src="{{this.poster}}" height="90" width="80"></td>
+            <td>{{this.title}}</td>
+            <td>{{this.fullplot}}</td>
+            <td>
+                <ul class="languages_list">
+                 {{#each languages}}
+                 <li>{{this}}</li>
+                 {{/each}}
+                 </ul>
+            </td>
+            <td>{{this.released}}</td>
+            <td>
+                <ol class="directors_list">
+                 {{#each directors}}
+                 <li>{{this}}</li>
+                 {{/each}}
+                 </ol>
+            </td>
+            <td>
+                <ol class="writers_list">
+                 {{#each writers}}
+                 <li>{{this}}</li>
+                 {{/each}}
+                 </ol>
+            </td>
+            <td>{{this.awards}}</td>
+            <td>{{this.lastupdated}}</td>
+            <td>{{this.year}}</td>
+            <td>{{this.imdb}}</td>
+            <td>{{this.countries}}</td>
+            <td>{{this.type}}</td>
+            <td>{{this.tomatoes}}</td>
         </tr>
         {{/each}}
     </tbody>
