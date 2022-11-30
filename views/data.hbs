@@ -1,83 +1,83 @@
-<table border="1">
+<table style="background-color:#B2AC88" border="1">
     <thead>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Plot</th>
-        <th>Genres</th>
-        <th>Runtime</th>
-        <th>Rated</th>
-        <th>Cast</th>
-        <th>Comments</th>
-        <th>Poster</th>
-        <th>Title</th>
-        <th>Fullplot</th>
-        <th>Languages</th>
-        <th>Released</th>
-        <th>Directors</th>
-        <th>Writers</th>
-        <th>Awards</th>
-        <th>Last Update</th>
-        <th>Year</th>
-        <th>IMDB</th>
-        <th>Countries</th>
-        <th>Type</th>
-        <th>Tomatoes</th>
+        <th bgcolor="#B4A6C3">ID</th>
+        <th bgcolor="#B4A6C3">Title</th>
+        <th bgcolor="#B4A6C3">Plot</th>
+        <th bgcolor="#B4A6C3">Genres</th>
+        <th bgcolor="#B4A6C3">Runtime</th>
+        <th bgcolor="#B4A6C3">Rated</th>
+        <th bgcolor="#B4A6C3">Cast</th>
+        <th bgcolor="#B4A6C3">Comments</th>
+        <th bgcolor="#B4A6C3">Poster</th>
+        <th bgcolor="#B4A6C3">Title</th>
+        <th bgcolor="#B4A6C3">Fullplot</th>
+        <th bgcolor="#B4A6C3">Languages</th>
+        <th bgcolor="#B4A6C3">Released</th>
+        <th bgcolor="#B4A6C3">Directors</th>
+        <th bgcolor="#B4A6C3">Writers</th>
+        <th bgcolor="#B4A6C3">Awards</th>
+        <th bgcolor="#B4A6C3">Last Update</th>
+        <th bgcolor="#B4A6C3">Year</th>
+        <th bgcolor="#B4A6C3">IMDB</th>
+        <th bgcolor="#B4A6C3">Countries</th>
+        <th bgcolor="#B4A6C3">Type</th>
+        <th bgcolor="#B4A6C3">Tomatoes</th>
     </thead>
     <tbody>
         {{#each movies}}
         <tr>
-            <td>{{this._id}}</td>
-            <td>{{this.title}}</td>
-            <td>{{this.plot}}</td>
-            <td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this._id}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.title}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.plot}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">
                  <ul class="genres_list">
                  {{#each genres}}
                  <li>{{this}}</li>
                  {{/each}}
                  </ul>
-            </td>
-            <td>{{this.runtime}}</td>
-            <td>{{this.rated}}</td>
-            <td>
+            </td style="text-align:left;vertical-align:top;padding:0">
+            <td style="text-align:center;vertical-align:top;padding:0">{{this.runtime}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.rated}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">
                 <ul class="cast_list">
                  {{#each cast}}
                  <li>{{this}}</li>
                  {{/each}}
                  </ul>
             </td>
-            <td>{{this.num_mflix_comments}}</td>
-            <td><img src="{{this.poster}}" height="90" width="80"></td>
-            <td>{{this.title}}</td>
-            <td>{{this.fullplot}}</td>
-            <td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.num_mflix_comments}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0"><img src="{{this.poster}}" height="90" width="80"></td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.title}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.fullplot}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">
                 <ul class="languages_list">
                  {{#each languages}}
                  <li>{{this}}</li>
                  {{/each}}
                  </ul>
             </td>
-            <td>{{this.released}}</td>
-            <td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.released}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">
                 <ol class="directors_list">
                  {{#each directors}}
                  <li>{{this}}</li>
                  {{/each}}
                  </ol>
             </td>
-            <td>
+            <td style="text-align:left;vertical-align:top;padding:0">
                 <ol class="writers_list">
                  {{#each writers}}
                  <li>{{this}}</li>
                  {{/each}}
                  </ol>
             </td>
-            <td>{{this.awards}}</td>
-            <td>{{this.lastupdated}}</td>
-            <td>{{this.year}}</td>
-            <td>{{this.imdb}}</td>
-            <td>{{this.countries}}</td>
-            <td>{{this.type}}</td>
-            <td>{{this.tomatoes}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.awards}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.lastupdated}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.year}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.imdb}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.countries}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.type}}</td>
+            <td style="text-align:left;vertical-align:top;padding:0">{{this.tomatoes}}</td>
         </tr>
         {{/each}}
     </tbody>
