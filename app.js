@@ -43,7 +43,8 @@ app.get('/api/getForm', (req, res) => {
 });
 
 //Output of handlebar
-app.post('/api/movies/getResult', getAllMovies,function (req, res) {
+app.post('/api/movies/getResult', getAllMoviesForm,function (req, res) {
+    console.log(req.body)
    res.render('data',{movies:res.movie});
     // use mongoose to get all movies based on page, perpage limit and title
 });
@@ -52,6 +53,39 @@ app.post('/api/movies/getResult', getAllMovies,function (req, res) {
 app.get("/api/movies", getAllMovies, (req, res) => {
     res.json(res.movie);
 });
+
+async function getAllMoviesForm(req, res, next) {
+    let movie;
+    try {
+        // use mongoose to get all movies in the database
+        let perPage = 2;
+        let page = 1;
+        let title = {}
+        if (req.body.perpage) {
+            perPage = parseInt(req.body.perpage);
+        }
+        if (req.body.page) {
+            page = parseInt(req.body.page);
+        }
+        if (req.body.title) {
+            title = { title: req.body.title }
+        }
+        movie = await Movie
+            .find(title)
+            .sort({
+                _id: 'asc'
+            })
+            .skip(perPage * (page - 1))
+            .limit(perPage)
+        if (movie == null) {
+            return res.status(404).json({ message: "Cannot find movies" });
+        }
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+    res.movie = movie;
+    next();
+}
 
 async function getAllMovies(req, res, next) {
     let movie;
