@@ -16,7 +16,7 @@ var bodyParser = require('body-parser');
 var Movie = require('./models/movie');
 const Handlebars = require('handlebars')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
-
+const { getAllMovies, getAllMoviesForm, getMoviesById, deleteMovieById, updateMovieById, createMovie } = require('./movieModule');
 
 var port = process.env.PORT || 8000;
 app.use(bodyParser.urlencoded({ 'extended': 'true' }));            // parse application/x-www-form-urlencoded
@@ -43,182 +43,22 @@ app.get('/api/getForm', (req, res) => {
 });
 
 //Output of handlebar
-app.post('/api/movies/getResult', getAllMoviesForm,function (req, res) {
-    console.log(req.body)
-   res.render('data',{movies:res.movie});
-    // use mongoose to get all movies based on page, perpage limit and title
-});
+app.post('/api/movies/getResult', getAllMoviesForm);
 
 //get all movies data from db
-app.get("/api/movies", getAllMovies, (req, res) => {
-    res.json(res.movie);
-});
-
-async function getAllMoviesForm(req, res, next) {
-    let movie;
-    try {
-        // use mongoose to get all movies in the database
-        let perPage = 2;
-        let page = 1;
-        let title = {}
-        if (req.body.perpage) {
-            perPage = parseInt(req.body.perpage);
-        }
-        if (req.body.page) {
-            page = parseInt(req.body.page);
-        }
-        if (req.body.title) {
-            title = { title: req.body.title }
-        }
-        movie = await Movie
-            .find(title)
-            .sort({
-                _id: 'asc'
-            })
-            .skip(perPage * (page - 1))
-            .limit(perPage)
-        if (movie == null) {
-            return res.status(404).json({ message: "Cannot find movies" });
-        }
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
-    }
-    res.movie = movie;
-    next();
-}
-
-async function getAllMovies(req, res, next) {
-    let movie;
-    try {
-        // use mongoose to get all movies in the database
-        let perPage = 2;
-        let page = 1;
-        let title = {}
-        if (req.query.perPage) {
-            perPage = parseInt(req.query.perPage);
-        }
-        if (req.query.page) {
-            page = parseInt(req.query.page);
-        }
-        if (req.query.title) {
-            title = { title: req.query.title }
-        }
-        movie = await Movie
-            .find(title)
-            .sort({
-                _id: 'asc'
-            })
-            .skip(perPage * (page - 1))
-            .limit(perPage)
-        if (movie == null) {
-            return res.status(404).json({ message: "Cannot find movies" });
-        }
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
-    }
-    res.movie = movie;
-    next();
-}
+app.get("/api/movies", getAllMovies);
 
 // get a movie with ID
-app.get('/api/movies/:movie_id', function (req, res) {
-    let id = req.params.movie_id;
-    Movie.findById(id, function (err, movie) {
-        if (err)
-            res.send(err)
-        res.json(movie);
-    });
-});
+app.get('/api/movies/:movie_id', getMoviesById);
 
 //Add new movie data
-app.post('/api/movies', function (req, res) {
-    // create mongoose method to create a new record into collection
-    console.log(req.body);
-    let data = {
-        plot: req.body.plot,
-        genres: req.body.genres,
-        runtime: req.body.runtime,
-        cast: req.body.cast,
-        poster: req.body.poster,
-        num_mflix_comments: req.body.num_mflix_comments,
-        title: req.body.title,
-        countries: req.body.countries,
-        languages: req.body.languages,
-        released: req.body.released,
-        directors: req.body.directors,
-        rated: req.body.rated,
-        awards: req.body.awards,
-        lastupdated: req.body.lastupdated,
-        year: req.body.year,
-        imdb: req.body.imdb,
-        type: req.body.type,
-        tomatoes: req.body.tomatoes
-    }
-    Movie.create(data, function (err, movies) {
-        if (err)
-            res.send(err);
-
-        // get and return all the movies after newly created movie record
-        Movie.find(function (err, movies) {
-            if (err)
-                res.send(err)
-            res.json(movies);
-        });
-    });
-
-});
-
+app.post('/api/movies', createMovie);
 
 //update movie by id 
-app.put('/api/movies/:movie_id', function (req, res) {
-    // create mongose method to update an existing record into collection
-    console.log(req.body);
-
-    let id = req.params.movie_id;
-    var data = {
-        plot: req.body.plot,
-        genres: req.body.genres,
-        runtime: req.body.runtime,
-        cast: req.body.cast,
-        poster: req.body.poster,
-        num_mflix_comments: req.body.num_mflix_comments,
-        title: req.body.title,
-        countries: req.body.countries,
-        languages: req.body.languages,
-        released: req.body.released,
-        directors: req.body.directors,
-        rated: req.body.rated,
-        awards: req.body.awards,
-        lastupdated: req.body.lastupdated,
-        year: req.body.year,
-        imdb: req.body.imdb,
-        type: req.body.type,
-        tomatoes: req.body.tomatoes
-    }
-
-    // save the movie
-    Movie.findByIdAndUpdate(id, data, function (err, movies) {
-        if (err) throw err;
-        res.send('Successfully updated!!- ' + movies);
-    });
-});
-
-
+app.put('/api/movies/:movie_id', updateMovieById);
 
 //delete movie by id
-app.delete('/api/movies/:delmovie_id', function (req, res) {
-    console.log(req.params.delmovie_id);
-    let id = req.params.delmovie_id;
-    Movie.deleteOne({
-        _id: id
-    }, function (err) {
-        if (err)
-            res.send(err);
-        else
-            res.send('Movie data has been sucessfully deleted!');
-    });
-});
-
+app.delete('/api/movies/:delmovie_id', deleteMovieById);
 
 // Wrong route - 404 page not found
 app.use((req, res) => {
