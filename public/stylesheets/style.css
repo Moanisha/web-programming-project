@@ -3,9 +3,9 @@
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   } */
 
-  * {
-    box-sizing: border-box;
-  }
+* {
+  box-sizing: border-box;
+}
 
 .wrapper {
   height: 100vh;
@@ -20,36 +20,44 @@ header,
 footer {
   background-color: #666;
   padding: 10px;
-  text-align: center; 
+  text-align: center;
   font-size: 35px;
   color: white;
 }
+
 header {
   position: fixed;
   top: 0;
   width: 100%;
 }
+
 footer {
   position: fixed;
   bottom: 0;
   width: 100%;
 }
 
+h4 {
+  margin: 7px 0 7px 0;
+  color: #B4A6C3
+}
+
 content {
-  padding: 50px;
-  margin-top: 25px;
+  padding: 84px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   flex: 1 0 auto;
 }
 
-table{
+table {
   border-collapse: collapse;
 }
-th{
+
+th {
   font-size: 20px;
 }
 
-input[type=text], select {
+input[type=text],
+select {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;

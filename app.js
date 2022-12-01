@@ -1,3 +1,11 @@
+/**********************************************************************************************
+ * ITE5315 – Project *
+ * I declare that this assignment is my own work in accordance with Humber Academic Policy. *
+ * No part of this assignment has been copied manually or electronically from any other source * 
+ * (including web sites) or distributed to other students. *
+ * Group member Name: Moanisha Velayuthem, Sakshi Patel Student IDs: N01482302, N01551583 Date: 30-11-2022 *
+ * ********************************************************************************************/
+
 var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose');
@@ -21,76 +29,61 @@ app.engine('.hbs', exphbs.engine({
 }));
 app.set('view engine', '.hbs');
 
-
-
+//Connection with atlas movie database
 mongoose.connect(database.url).
-    catch(error => handleError(error));
+    then(() => {
+        app.listen(port);
+        console.log("App listening on port : " + port);
+    })
+    .catch(error => console.log(error));
 
+//Handlebar input form
 app.get('/api/getForm', (req, res) => {
     res.render('insertForm');
 });
 
-app.post('/api/movies/getResult', function (req, res) {
+//Output of handlebar
+app.post('/api/movies/getResult', getAllMovies, function (req, res) {
     // use mongoose to get all movies based on page, perpage limit and title
-    let perPage = 2;
-    let page = 1;
-    let title = {}
-    if (req.body.perpage) {
-        perPage = parseInt(req.body.perpage);
-    }
-    if (req.body.page) {
-        page = parseInt(req.body.page);
-    }
-    if(req.body.title){
-        title = { title: req.body.title }
-    }
-
-    Movie
-        .find(title)
-        .sort({
-            _id: 'asc'
-        })
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .exec(function (err, movies) {
-            //if there is an error retrieving, send the error otherwise send data
-            if (err)
-                res.send(err)
-            console.log(movies)
-            res.render('data',{movies:movies}); // return result of movies
-        });
 });
+
 //get all movies data from db
-app.get('/api/movies', function (req, res) {
-    // use mongoose to get all movies in the database
-    let perPage = 2;
-    let page = 1;
-    let title = {}
-    if (req.query.perPage) {
-        perPage = parseInt(req.query.perPage);
-    }
-    if (req.query.page) {
-        page = parseInt(req.query.page);
-    }
-    if(req.query.title){
-        title = { title: req.query.title }
-    }
-
-    Movie
-        .find(title)
-        .sort({
-            _id: 'asc'
-        })
-        .skip(perPage * (page - 1))
-        .limit(perPage)
-        .exec(function (err, movies) {
-            //if there is an error retrieving, send the error otherwise send data
-            if (err)
-                res.send(err)
-            console.log(movies)
-            res.json(movies); // return all movies in JSON format
-        });
+app.get("/api/movies", getAllMovies, (req, res) => {
+    res.json(res.movie);
 });
+
+async function getAllMovies(req, res, next) {
+    let user;
+    try {
+        // use mongoose to get all movies in the database
+        let perPage = 2;
+        let page = 1;
+        let title = {}
+        if (req.query.perPage) {
+            perPage = parseInt(req.query.perPage);
+        }
+        if (req.query.page) {
+            page = parseInt(req.query.page);
+        }
+        if (req.query.title) {
+            title = { title: req.query.title }
+        }
+        movie = await Movie
+            .find(title)
+            .sort({
+                _id: 'asc'
+            })
+            .skip(perPage * (page - 1))
+            .limit(perPage)
+        if (movie == null) {
+            return res.status(404).json({ message: "Cannot find movies" });
+        }
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+    res.movie = movie;
+    next();
+}
 
 // get a movie with ID
 app.get('/api/movies/:movie_id', function (req, res) {
@@ -102,13 +95,11 @@ app.get('/api/movies/:movie_id', function (req, res) {
     });
 });
 
-
+//Add new movie data
 app.post('/api/movies', function (req, res) {
-
     // create mongoose method to create a new record into collection
     console.log(req.body);
-
-    Movie.create({
+    let data = {
         plot: req.body.plot,
         genres: req.body.genres,
         runtime: req.body.runtime,
@@ -127,7 +118,8 @@ app.post('/api/movies', function (req, res) {
         imdb: req.body.imdb,
         type: req.body.type,
         tomatoes: req.body.tomatoes
-    }, function (err, movies) {
+    }
+    Movie.create(data, function (err, movies) {
         if (err)
             res.send(err);
 
@@ -142,7 +134,7 @@ app.post('/api/movies', function (req, res) {
 });
 
 
-//PUT 
+//update movie by id 
 app.put('/api/movies/:movie_id', function (req, res) {
     // create mongose method to update an existing record into collection
     console.log(req.body);
@@ -150,24 +142,39 @@ app.put('/api/movies/:movie_id', function (req, res) {
     let id = req.params.movie_id;
     var data = {
         plot: req.body.plot,
-        rated: req.body.rated
+        genres: req.body.genres,
+        runtime: req.body.runtime,
+        cast: req.body.cast,
+        poster: req.body.poster,
+        num_mflix_comments: req.body.num_mflix_comments,
+        title: req.body.title,
+        countries: req.body.countries,
+        languages: req.body.languages,
+        released: req.body.released,
+        directors: req.body.directors,
+        rated: req.body.rated,
+        awards: req.body.awards,
+        lastupdated: req.body.lastupdated,
+        year: req.body.year,
+        imdb: req.body.imdb,
+        type: req.body.type,
+        tomatoes: req.body.tomatoes
     }
 
     // save the movie
     Movie.findByIdAndUpdate(id, data, function (err, movies) {
         if (err) throw err;
-
-        res.send('Successfully! Movie Plot and Ratings are updated!!- ' + movies.title);
+        res.send('Successfully updated!!- ' + movies);
     });
 });
 
 
 
-//DELETE
+//delete movie by id
 app.delete('/api/movies/:delmovie_id', function (req, res) {
     console.log(req.params.delmovie_id);
     let id = req.params.delmovie_id;
-    Movie.remove({
+    Movie.deleteOne({
         _id: id
     }, function (err) {
         if (err)
@@ -183,5 +190,4 @@ app.use((req, res) => {
     res.status(404).send("Oops! Page Not Found!");
 });
 
-app.listen(port);
-console.log("App listening on port : " + port);
+
