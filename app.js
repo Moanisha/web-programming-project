@@ -53,7 +53,7 @@ app.get("/api/movies", getAllMovies, (req, res) => {
 });
 
 async function getAllMovies(req, res, next) {
-    let user;
+    let movie;
     try {
         // use mongoose to get all movies in the database
         let perPage = 2;
