@@ -43,7 +43,8 @@ app.get('/api/getForm', (req, res) => {
 });
 
 //Output of handlebar
-app.post('/api/movies/getResult', getAllMovies, function (req, res) {
+app.post('/api/movies/getResult', getAllMovies,function (req, res) {
+   res.render('data',{movies:res.movie});
     // use mongoose to get all movies based on page, perpage limit and title
 });
 
