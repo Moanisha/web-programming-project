@@ -11,12 +11,12 @@ var path = require('path');
 var mongoose = require('mongoose');
 var app = express();
 const exphbs = require('express-handlebars');
-var database = require('./config/atlas-database');
+require('dotenv').config()
+
 var bodyParser = require('body-parser');
-var Movie = require('./models/movie');
 const Handlebars = require('handlebars')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
-const { getAllMovies, getAllMoviesForm, getMoviesById, deleteMovieById, updateMovieById, createMovie } = require('./movieModule');
+const { getAllMovies, verifyToken, signup, signin, getAllMoviesForm, getMoviesById, deleteMovieById, updateMovieById, createMovie } = require('./movieModule');
 
 var port = process.env.PORT || 8000;
 app.use(bodyParser.urlencoded({ 'extended': 'true' }));            // parse application/x-www-form-urlencoded
@@ -30,7 +30,7 @@ app.engine('.hbs', exphbs.engine({
 app.set('view engine', '.hbs');
 
 //Connection with atlas movie database
-mongoose.connect(database.url).
+mongoose.connect(process.env.DATABASE_URL).
     then(() => {
         app.listen(port);
         console.log("App listening on port : " + port);
@@ -42,23 +42,25 @@ app.get('/api/getForm', (req, res) => {
     res.render('insertForm');
 });
 
+app.post("/api/user/signup", signup);
+app.get("/api/user/signin", signin);
 //Output of handlebar
 app.post('/api/movies/getResult', getAllMoviesForm);
 
 //get all movies data from db
-app.get("/api/movies", getAllMovies);
+app.get("/api/movies", [verifyToken], getAllMovies);
 
 // get a movie with ID
-app.get('/api/movies/:movie_id', getMoviesById);
+app.get('/api/movies/:movie_id', [verifyToken], getMoviesById);
 
 //Add new movie data
-app.post('/api/movies', createMovie);
+app.post('/api/movies', [verifyToken], createMovie);
 
 //update movie by id 
-app.put('/api/movies/:movie_id', updateMovieById);
+app.put('/api/movies/:movie_id', [verifyToken], updateMovieById);
 
 //delete movie by id
-app.delete('/api/movies/:delmovie_id', deleteMovieById);
+app.delete('/api/movies/:delmovie_id', [verifyToken], deleteMovieById);
 
 // Wrong route - 404 page not found
 app.use((req, res) => {
