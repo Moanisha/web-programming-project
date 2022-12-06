@@ -8,15 +8,17 @@
 
 var express = require('express');
 var path = require('path');
-var mongoose = require('mongoose');
-var app = express();
 const exphbs = require('express-handlebars');
+var app = express();
+
 require('dotenv').config()
 
 var bodyParser = require('body-parser');
 const Handlebars = require('handlebars')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
-const { getAllMovies, verifyToken, signup, signin, getAllMoviesForm, getMoviesById, deleteMovieById, updateMovieById, createMovie } = require('./movieModule');
+const { getAllMovies, getAllMoviesForm, getMoviesById, deleteMovieById, updateMovieById, addNewMovie } = require('./controllers/movieController');
+const { verifyToken, signup, signin } = require('./controllers/userController');
+const { initialize } = require('./controllers/dbController');
 
 var port = process.env.PORT || 8000;
 app.use(bodyParser.urlencoded({ 'extended': 'true' }));            // parse application/x-www-form-urlencoded
@@ -29,21 +31,30 @@ app.engine('.hbs', exphbs.engine({
 }));
 app.set('view engine', '.hbs');
 
-//Connection with atlas movie database
-mongoose.connect(process.env.DATABASE_URL).
-    then(() => {
-        app.listen(port);
-        console.log("App listening on port : " + port);
-    })
-    .catch(error => console.log(error));
+//Start the server if the db connection is successful
+
+const initializeDb = () => {
+    initialize.then((isConnected) => {
+        if (isConnected) {
+            app.listen(port);
+            console.log("App listening on port : " + port);
+        }
+    });
+};
+
+initializeDb();
+
+//Signup
+app.post("/api/user/signup", signup);
+
+//Signin to get the token
+app.get("/api/user/signin", signin);
 
 //Handlebar input form
 app.get('/api/getForm', (req, res) => {
     res.render('insertForm');
 });
 
-app.post("/api/user/signup", signup);
-app.get("/api/user/signin", signin);
 //Output of handlebar
 app.post('/api/movies/getResult', getAllMoviesForm);
 
@@ -54,7 +65,7 @@ app.get("/api/movies", [verifyToken], getAllMovies);
 app.get('/api/movies/:movie_id', [verifyToken], getMoviesById);
 
 //Add new movie data
-app.post('/api/movies', [verifyToken], createMovie);
+app.post('/api/movies', [verifyToken], addNewMovie);
 
 //update movie by id 
 app.put('/api/movies/:movie_id', [verifyToken], updateMovieById);
