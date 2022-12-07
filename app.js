@@ -34,17 +34,11 @@ app.set('view engine', '.hbs');
 mongoose.set('strictQuery', true);
 
 //Start the server if the db connection is successful
-
-const initializeDb = () => {
-    initialize.then((isConnected) => {
-        if (isConnected) {
-            app.listen(port);
-            console.log("App listening on port : " + port);
-        }
-    });
-};
-
-initializeDb();
+initialize().then(() => {
+    app.listen(port, () => {
+        console.log("listening for requests");
+    })
+})
 
 //Signup
 app.post("/api/user/signup", signup);
