@@ -9,6 +9,7 @@
 var express = require('express');
 var path = require('path');
 const exphbs = require('express-handlebars');
+var mongoose = require('mongoose');
 var app = express();
 
 require('dotenv').config()
@@ -30,6 +31,7 @@ app.engine('.hbs', exphbs.engine({
     handlebars: allowInsecurePrototypeAccess(Handlebars)
 }));
 app.set('view engine', '.hbs');
+mongoose.set('strictQuery', true);
 
 //Start the server if the db connection is successful
 
